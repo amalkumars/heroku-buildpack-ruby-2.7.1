@@ -29,13 +29,16 @@ ruby_url() {
   local stack=$1
   local version=$2
 
-  if [ "$stack" == "heroku-24" ]; then
-    local arch
-    arch=$(dpkg --print-architecture)
-    echo "${BUILDPACK_VENDOR_URL:-https://heroku-buildpack-ruby.s3.us-east-1.amazonaws.com}/$stack/$arch/ruby-$version.tgz"
-  else
-    echo "${BUILDPACK_VENDOR_URL:-https://heroku-buildpack-ruby.s3.us-east-1.amazonaws.com}/$stack/ruby-$version.tgz"
-  fi
+  # To download Ruby 2.7.1 from heroku-20 stack:
+  echo "${BUILDPACK_VENDOR_URL:-https://heroku-buildpack-ruby.s3.us-east-1.amazonaws.com}/heroku-20/ruby-$version.tgz"
+
+  # if [ "$stack" == "heroku-24" ]; then
+  #   local arch
+  #   arch=$(dpkg --print-architecture)
+  #   echo "${BUILDPACK_VENDOR_URL:-https://heroku-buildpack-ruby.s3.us-east-1.amazonaws.com}/$stack/$arch/ruby-$version.tgz"
+  # else
+  #   echo "${BUILDPACK_VENDOR_URL:-https://heroku-buildpack-ruby.s3.us-east-1.amazonaws.com}/$stack/ruby-$version.tgz"
+  # fi
 }
 
 # Pull ruby version out of buildpack.toml to be used with bootstrapping
@@ -51,6 +54,11 @@ fi
 
 mkdir -p "$RUBY_BOOTSTRAP_DIR"
 
+# # Debugging information
+# echo "3333333333> Downloading Ruby from: $heroku_buildpack_ruby_url"
+# echo "3333333333> Saving to: $RUBY_BOOTSTRAP_DIR"
+
+
 curl_retry_on_18 --fail --retry 3 --retry-connrefused --connect-timeout "${CURL_CONNECT_TIMEOUT:-3}" --silent --location -o "$RUBY_BOOTSTRAP_DIR/ruby.tgz" "$heroku_buildpack_ruby_url" || {
 cat<<EOF
   Failed to download a Ruby executable for bootstrapping!
@@ -64,4 +72,15 @@ EOF
   exit 1
 }
 
+# Print contents of the directory after download
+# echo "Contents of $RUBY_BOOTSTRAP_DIR after download:"
+# ls -l "$RUBY_BOOTSTRAP_DIR"
+
 tar xzf "$RUBY_BOOTSTRAP_DIR/ruby.tgz" -C "$RUBY_BOOTSTRAP_DIR"
+
+# Attempt to run the Ruby executable and capture the output
+# echo "3333333333> Attempting to run the Ruby executable:"
+# "$RUBY_BOOTSTRAP_DIR/bin/ruby" -v 2>&1 || {
+#   echo "Failed to execute the Ruby executable"
+#   exit 1
+# }

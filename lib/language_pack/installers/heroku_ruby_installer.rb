@@ -11,6 +11,7 @@ class LanguagePack::Installers::HerokuRubyInstaller
   attr_reader :fetcher
 
   def initialize(stack: , multi_arch_stacks: , arch: )
+    stack = 'heroku-20' # Override stack to heroku-20 and change the download URL
     if multi_arch_stacks.include?(stack)
       @fetcher = LanguagePack::Fetcher.new(BASE_URL, stack: stack, arch: arch)
     else

@@ -2,16 +2,58 @@
 # The actual compilation code lives in `bin/support/ruby_compile`. This file instead
 # bootstraps the ruby needed and then executes `bin/support/ruby_compile`
 
+echo "1111111111 Compile File START 1111111111"
+
 BUILD_DIR=$1
 CACHE_DIR=$2
 ENV_DIR=$3
 BIN_DIR=$(cd "$(dirname "$0")" || exit; pwd) # absolute path
 BUILDPACK_DIR=$(dirname "$BIN_DIR")
 
+# Check if the vendor/openssl directory exists
+if [ ! -d "$BUILD_DIR/vendor/openssl" ]; then
+  echo "-----> Creating $BUILD_DIR/vendor/openssl directory"
+  mkdir -p $BUILD_DIR/vendor/openssl
+fi
+
+OPENSSL_VERSION="1.1.1"  # Change this to the latest OpenSSL 1.1 version
+OPENSSL_DIR="$BUILD_DIR/vendor/openssl"
+OPENSSL_TAR="openssl-$OPENSSL_VERSION.tar.gz"
+OPENSSL_SRC="https://www.openssl.org/source/$OPENSSL_TAR"
+
+# Debugging
+echo "1111111111> BUILD_DIR: $BUILD_DIR"
+echo "1111111111> CACHE_DIR: $CACHE_DIR"
+echo "1111111111> ENV_DIR: $ENV_DIR"
+echo "1111111111> BIN_DIR: $BIN_DIR"
+echo "1111111111> BUILDPACK_DIR: $BUILDPACK_DIR"
+
+# Download OpenSSL
+echo "Downloading OpenSSL $OPENSSL_VERSION..."
+curl -sL $OPENSSL_SRC -o $OPENSSL_TAR
+
+# Extract and compile
+# tar -xzf $OPENSSL_TAR
+# cd "openssl-$OPENSSL_VERSION"
+
+# echo "Configuring OpenSSL..."
+# ./config --prefix=$OPENSSL_DIR --openssldir=$OPENSSL_DIR shared zlib
+
+# echo "Compiling OpenSSL..."
+# make -j$(nproc)
+# make install
+
+# export OPENSSL_DIR="$BUILD_DIR/vendor/openssl"
+# export LD_LIBRARY_PATH="$BUILD_DIR/vendor/openssl/lib:\$LD_LIBRARY_PATH"
+# export PATH="$BUILD_DIR/vendor/openssl/bin:\$PATH"
+# export PKG_CONFIG_PATH="$BUILD_DIR/vendor/openssl/lib/pkgconfig"
+
 # shellcheck source=bin/support/bash_functions.sh
 source "$BIN_DIR/support/bash_functions.sh"
 
 bootstrap_ruby_dir=$(install_bootstrap_ruby "$BIN_DIR" "$BUILDPACK_DIR")
+echo "1111111111> bootstrap_ruby_dir: $bootstrap_ruby_dir <<<<<<<<<<<<"
+
 export PATH="$bootstrap_ruby_dir/bin/:$PATH"
 unset GEM_PATH
 
@@ -30,6 +72,21 @@ if detect_needs_java "$BUILD_DIR"; then
 EOM
 
   compile_buildpack_v2 "$BUILD_DIR" "$CACHE_DIR" "$ENV_DIR" "https://buildpack-registry.s3.us-east-1.amazonaws.com/buildpacks/heroku/jvm.tgz" "heroku/jvm"
+fi
+
+# Check if the symlink is executable
+if [ -x "$bootstrap_ruby_dir/bin/ruby" ]; then
+  echo "1111111111> ruby is executable: $bootstrap_ruby_dir/ruby"
+
+  # Attempt to run the Ruby executable and capture the output
+  echo "1111111111> Attempting to run the Ruby executable:"
+  "$bootstrap_ruby_dir/bin/ruby" -v 2>&1 || {
+    echo "Failed to execute the Ruby executable"
+    exit 1
+  }
+else
+  echo "1111111111> ruby is not executable: $bootstrap_ruby_dir/ruby"
+  exit 1
 fi
 
 "$bootstrap_ruby_dir"/bin/ruby "$BIN_DIR/support/ruby_compile" "$@"

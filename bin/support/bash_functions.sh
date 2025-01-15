@@ -47,12 +47,16 @@ install_bootstrap_ruby()
     heroku_buildpack_ruby_dir=$(mktemp -d)
     # bootstrap ruby
     "$bin_dir"/support/download_ruby "$bin_dir" "$heroku_buildpack_ruby_dir"
+
     function atexit {
       # shellcheck disable=SC2317
       rm -rf "$heroku_buildpack_ruby_dir"
     }
     trap atexit EXIT
   fi
+
+  # Create a symlink to the Ruby executable in the current working directory's bin folder
+  ln -s "$heroku_buildpack_ruby_dir/bin/ruby" "$bin_dir/ruby"
 
   echo "$heroku_buildpack_ruby_dir"
 }
@@ -152,4 +156,3 @@ compile_buildpack_v2()
     fi
   fi
 }
-
