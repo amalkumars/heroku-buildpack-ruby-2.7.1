@@ -254,15 +254,15 @@ class LanguagePack::Helpers::BundlerWrapper
     # - doc
     FileUtils.mkdir_p(bundler_path)
     Dir.chdir(bundler_path) do
-      fetch_package_and_untar(package, *args)
+      fetch_package_and_untar
       # @fetcher.fetch_untar(@bundler_tar)
     end
     Dir["bin/*"].each {|path| `chmod 755 #{path}` }
   end
 
-  def fetch_package_and_untar(package, *args)
+  def fetch_package_and_untar
     curl_cmd = "curl -L --fail --retry 5 --retry-delay 1 --connect-timeout 3 --max-time 30"
-    url = "https://heroku-buildpack-ruby.s3.us-east-1.amazonaws.com/bundler/bundler-#{@bundler_version}.tgz"
+    url = "https://heroku-buildpack-ruby.s3.us-east-1.amazonaws.com/bundler/bundler-2.3.25.tgz"
     full_cmd = "/usr/bin/bash -c '#{curl_cmd} #{url} -s -o - | tar zxf - --strip 0'"
     run!(full_cmd)
   end
