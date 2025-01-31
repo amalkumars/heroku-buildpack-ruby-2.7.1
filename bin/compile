@@ -9,6 +9,7 @@ CACHE_DIR=$2
 ENV_DIR=$3
 BIN_DIR=$(cd "$(dirname "$0")" || exit; pwd) # absolute path
 BUILDPACK_DIR=$(dirname "$BIN_DIR")
+OPENSSL_DIR="$BUILD_DIR/vendor/openssl"
 
 # Check if the vendor/openssl directory exists
 if [ ! -d "$BUILD_DIR/vendor/openssl" ]; then
@@ -66,6 +67,11 @@ else
   echo "1111111111> ruby is not executable: $bootstrap_ruby_dir/ruby"
   exit 1
 fi
+
+export PATH="$OPENSSL_DIR/bin:\$PATH"
+export LD_LIBRARY_PATH="$OPENSSL_DIR/lib:\$LD_LIBRARY_PATH"
+export OPENSSL_DIR="$OPENSSL_DIR"
+export PKG_CONFIG_PATH="$OPENSSL_DIR/lib/pkgconfig:\$PKG_CONFIG_PATH"
 
 echo "1111111111 PATH> $PATH"
 echo "1111111111 LD_LIBRARY_PATH> $LD_LIBRARY_PATH"
