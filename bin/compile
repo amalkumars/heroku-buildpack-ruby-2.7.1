@@ -12,14 +12,10 @@ BUILDPACK_DIR=$(dirname "$BIN_DIR")
 
 # Check if the vendor/openssl directory exists
 if [ ! -d "$BUILD_DIR/vendor/openssl" ]; then
-  echo "-----> Creating $BUILD_DIR/vendor/openssl directory"
-  mkdir -p $BUILD_DIR/vendor/openssl
+  echo "1111111111 $BUILD_DIR/vendor/openssl directory NOT FOUND"
+  # echo "-----> Creating $BUILD_DIR/vendor/openssl directory"
+  # mkdir -p $BUILD_DIR/vendor/openssl
 fi
-
-OPENSSL_VERSION="1.1.1"  # Change this to the latest OpenSSL 1.1 version
-OPENSSL_DIR="$BUILD_DIR/vendor/openssl"
-OPENSSL_TAR="openssl-$OPENSSL_VERSION.tar.gz"
-OPENSSL_SRC="https://www.openssl.org/source/$OPENSSL_TAR"
 
 # Debugging
 echo "1111111111> BUILD_DIR: $BUILD_DIR"
@@ -28,25 +24,8 @@ echo "1111111111> ENV_DIR: $ENV_DIR"
 echo "1111111111> BIN_DIR: $BIN_DIR"
 echo "1111111111> BUILDPACK_DIR: $BUILDPACK_DIR"
 
-# Download OpenSSL
-echo "Downloading OpenSSL $OPENSSL_VERSION..."
-curl -sL $OPENSSL_SRC -o $OPENSSL_TAR
-
-# Extract and compile
-# tar -xzf $OPENSSL_TAR
-# cd "openssl-$OPENSSL_VERSION"
-
-# echo "Configuring OpenSSL..."
-# ./config --prefix=$OPENSSL_DIR --openssldir=$OPENSSL_DIR shared zlib
-
-# echo "Compiling OpenSSL..."
-# make -j$(nproc)
-# make install
-
-# export OPENSSL_DIR="$BUILD_DIR/vendor/openssl"
-# export LD_LIBRARY_PATH="$BUILD_DIR/vendor/openssl/lib:\$LD_LIBRARY_PATH"
-# export PATH="$BUILD_DIR/vendor/openssl/bin:\$PATH"
-# export PKG_CONFIG_PATH="$BUILD_DIR/vendor/openssl/lib/pkgconfig"
+echo "Displaying contents openssl directory:"
+ls -al $BUILD_DIR/vendor/openssl
 
 # shellcheck source=bin/support/bash_functions.sh
 source "$BIN_DIR/support/bash_functions.sh"
