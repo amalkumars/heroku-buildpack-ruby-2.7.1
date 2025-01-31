@@ -88,7 +88,7 @@ module LanguagePack
       max_attempts = options[:max_attempts] || 1
       error_class  = options[:error_class] || StandardError
       silent       = options.key?(:silent) ? options[:silent] : false
-      puts "xxxxx #{wrapped_command} xxxxx"
+      puts "xxxxx #{command} xxxxx"
       max_attempts.times do |attempt_number|
         result = run(command, options)
         if $?.success?
