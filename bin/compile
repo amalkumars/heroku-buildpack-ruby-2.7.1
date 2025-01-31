@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 # The actual compilation code lives in `bin/support/ruby_compile`. This file instead
 # bootstraps the ruby needed and then executes `bin/support/ruby_compile`
-export SHELL=/bin/bash
 
 echo "1111111111 Compile File START 1111111111"
 

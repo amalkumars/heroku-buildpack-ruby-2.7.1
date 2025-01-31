@@ -89,8 +89,9 @@ module LanguagePack
       error_class  = options[:error_class] || StandardError
       silent       = options.key?(:silent) ? options[:silent] : false
 
-      # Modify the command to explicitly use /bin/bash
-      wrapped_command = "/bin/bash -c '#{command.gsub("'", "'\\''")}'"
+      # Modify the command to explicitly use /usr/bin/bash
+      wrapped_command = "/usr/bin/bash -c '#{command.gsub("'", "'\\''")}'"
+      puts "xxxxx #{wrapped_command} xxxxx"
 
       max_attempts.times do |attempt_number|
         result = run(wrapped_command, options)
