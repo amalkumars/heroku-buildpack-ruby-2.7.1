@@ -12,7 +12,8 @@ module LanguagePack
   def self.detect(*args)
     Dir.chdir(args.first)
 
-    pack = [ NoLockfile, Rails8, Rails7, Rails6, Rails5, Rails42, Rails41, Rails4, Rails3, Rails2, Rack, Ruby ].detect do |klass|
+    # pack = [ NoLockfile, Rails8, Rails7, Rails6, Rails5, Rails42, Rails41, Rails4, Rails3, Rails2, Rack, Ruby ].detect do |klass|
+    pack = [ NoLockfile, Rails5, Rails42, Rails41, Rails4, Rails3, Rails2, Rack, Ruby ].detect do |klass|
       klass.use?
     end
 
