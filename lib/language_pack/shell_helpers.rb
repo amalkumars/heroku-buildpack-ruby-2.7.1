@@ -116,7 +116,7 @@ module LanguagePack
     # @option options [Hash] :env explicit environment to run command in
     # @option options [Boolean] :user_env whether or not a user's environment variables will be loaded
     def run(command, options = {})
-      wrapped_command = %Q{/usr/bin/bash -c "#{command_options_to_string(command, options)}"}
+      wrapped_command = %Q{/usr/bin/bash -c "/usr/bin/#{command_options_to_string(command, options)}"}
       %x{ #{wrapped_command} }
     end
 
