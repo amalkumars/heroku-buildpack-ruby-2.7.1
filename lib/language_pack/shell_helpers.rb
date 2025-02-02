@@ -88,7 +88,7 @@ module LanguagePack
       max_attempts = options[:max_attempts] || 1
       error_class  = options[:error_class] || StandardError
       silent       = options.key?(:silent) ? options[:silent] : false
-      puts "xxxxx #{command} xxxxx"
+
       max_attempts.times do |attempt_number|
         result = run(command, options)
         if $?.success?
@@ -116,7 +116,8 @@ module LanguagePack
     # @option options [Hash] :env explicit environment to run command in
     # @option options [Boolean] :user_env whether or not a user's environment variables will be loaded
     def run(command, options = {})
-      %x{ #{command_options_to_string(command, options)} }
+      wrapped_command = %Q{/usr/bin/bash -c "#{command_options_to_string(command, options)}"}
+      %x{ #{wrapped_command} }
     end
 
     # run a shell command and pipe stderr to /dev/null
@@ -132,16 +133,13 @@ module LanguagePack
       options[:out] ||= "2>&1"
       options[:env] = user_env_hash.merge(options[:env]) if options[:user_env]
 
-      # Build environment variables string
       env = options[:env].map {|key, value| "#{key.shellescape}=#{value.shellescape}" }.join(" ")
 
-      # Escape the command properly
-      escaped_command = command.gsub("'", "'\\''")
-
+      # Use double quotes and no nesting
       if env.empty?
-        "/usr/bin/bash -c \"#{escaped_command}\" #{options[:out]}"
+        command
       else
-        "/usr/bin/bash -c \"#{env} #{escaped_command}\" #{options[:out]}"
+        "#{env} #{command}"
       end
     end
 
