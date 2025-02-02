@@ -132,19 +132,16 @@ module LanguagePack
       options[:out] ||= "2>&1"
       options[:env] = user_env_hash.merge(options[:env]) if options[:user_env]
 
-      # Ensure PATH is preserved
-      paths = "/usr/local/bin:/usr/bin:/bin"
-      options[:env]['PATH'] = "#{paths}:#{options[:env]['PATH']}" if options[:env]['PATH']
-      options[:env]['PATH'] ||= paths
-
       # Build environment variables string
       env = options[:env].map {|key, value| "#{key.shellescape}=#{value.shellescape}" }.join(" ")
 
-      # Use direct bash path instead of /usr/bin/env
+      # Escape the command properly
+      escaped_command = command.gsub("'", "'\\''")
+
       if env.empty?
-        "/usr/bin/bash -c #{command.shellescape} #{options[:out]}"
+        "/usr/bin/bash -c \"#{escaped_command}\" #{options[:out]}"
       else
-        "/usr/bin/bash -c '#{env} #{command.shellescape}' #{options[:out]}"
+        "/usr/bin/bash -c \"#{env} #{escaped_command}\" #{options[:out]}"
       end
     end
 
