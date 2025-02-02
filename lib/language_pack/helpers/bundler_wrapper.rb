@@ -274,7 +274,7 @@ class LanguagePack::Helpers::BundlerWrapper
 
       # Extract file
       puts "1111111111 Extracting: #{temp_file} 1111111111"
-      extract_command = "/usr/bin/tar zxf #{temp_file} --strip 0"
+      extract_command = "/usr/bin/tar --gzip -xvf #{temp_file}"
       run!(extract_command)
       puts "1111111111 Extracted: #{temp_file} 1111111111"
 
