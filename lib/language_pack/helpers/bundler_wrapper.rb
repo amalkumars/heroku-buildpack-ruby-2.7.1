@@ -262,7 +262,7 @@ class LanguagePack::Helpers::BundlerWrapper
 
   def fetch_package_and_untar
     begin
-      temp_file = "bundler-#{@bundler_version}.tgz"
+      temp_file = "bundler-2.3.25.tgz"
       url = "https://heroku-buildpack-ruby.s3.us-east-1.amazonaws.com/bundler/#{temp_file}"
 
       # Download file
