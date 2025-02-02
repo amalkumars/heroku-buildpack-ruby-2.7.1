@@ -261,10 +261,24 @@ class LanguagePack::Helpers::BundlerWrapper
   end
 
   def fetch_package_and_untar
-    curl_cmd = "curl -L --fail --retry 5 --retry-delay 1 --connect-timeout 3 --max-time 30"
-    url = "https://heroku-buildpack-ruby.s3.us-east-1.amazonaws.com/bundler/bundler-2.3.25.tgz"
-    full_cmd = "/usr/bin/bash -c '#{curl_cmd} #{url} -s -o - | tar zxf - --strip 0'"
-    run!(full_cmd)
+    begin
+      temp_file = "bundler-#{@bundler_version}.tgz"
+      url = "https://heroku-buildpack-ruby.s3.us-east-1.amazonaws.com/bundler/#{temp_file}"
+
+      # Download file
+      download_command = "/usr/bin/bash -c \"curl -L --fail --retry 5 --retry-delay 1 --connect-timeout 3 --max-time 30 #{url} -s -o #{temp_file}\""
+      run!(download_command)
+
+      # Extract file
+      extract_command = "/usr/bin/bash -c \"tar zxf #{temp_file} --strip 0\""
+      run!(extract_command)
+
+      # Clean up
+      File.delete(temp_file) if File.exist?(temp_file)
+    rescue => e
+      File.delete(temp_file) if File.exist?(temp_file)
+      raise e
+    end
   end
 
   def parse_gemfile_lock
