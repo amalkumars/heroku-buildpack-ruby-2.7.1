@@ -80,4 +80,7 @@ echo "1111111111 LD_LIBRARY_PATH> $LD_LIBRARY_PATH"
 echo "1111111111 OPENSSL_DIR> $OPENSSL_DIR"
 echo "1111111111 PKG_CONFIG_PATH> $PKG_CONFIG_PATH"
 
+echo "1111111111 BASH PATH 1111111111"
+which bash
+
 "$bootstrap_ruby_dir"/bin/ruby "$BIN_DIR/support/ruby_compile" "$@"
