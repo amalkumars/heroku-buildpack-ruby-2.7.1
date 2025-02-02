@@ -116,6 +116,7 @@ module LanguagePack
     # @option options [Hash] :env explicit environment to run command in
     # @option options [Boolean] :user_env whether or not a user's environment variables will be loaded
     def run(command, options = {})
+      puts "1111111111 Run COMMAND: #{command_options_to_string(command, options)} 1111111111"
       %x{ #{command_options_to_string(command, options)} }
     end
 
@@ -133,11 +134,13 @@ module LanguagePack
       options[:out] ||= "2>&1"
       options[:env] = user_env_hash.merge(options[:env]) if options[:user_env]
       env = options[:env].map {|key, value| "#{key.shellescape}=#{value.shellescape}" }.join(" ")
-      if env.empty?
-        "/usr/bin/bash -c #{command.shellescape} #{options[:out]} "
-      else
-        "/usr/bin/env #{env} bash -c #{command.shellescape} #{options[:out]} "
-      end
+      # if env.empty?
+      #   "/usr/bin/bash -c #{command.shellescape} #{options[:out]} "
+      # else
+      #   "/usr/bin/env #{env} bash -c #{command.shellescape} #{options[:out]} "
+      # end
+
+      command
     end
 
     # Class for running process spawn with a timeout
