@@ -268,13 +268,13 @@ class LanguagePack::Helpers::BundlerWrapper
 
       # Download file
       puts "1111111111 Download Started: #{url} 1111111111"
-      download_command = "/usr/bin/bash -c /usr/bin/curl -L --fail --retry 5 --retry-delay 1 --connect-timeout 3 --max-time 30 #{url} -s -o #{temp_file}"
+      download_command = "/usr/bin/curl -L --fail --retry 5 --retry-delay 1 --connect-timeout 3 --max-time 30 #{url} -s -o #{temp_file}"
       run!(download_command)
       puts "1111111111 Download Finished: #{url} 1111111111"
 
       # Extract file
       puts "1111111111 Extracting: #{temp_file} 1111111111"
-      extract_command = "/usr/bin/bash -c /usr/bin/tar zxf #{temp_file} --strip 0"
+      extract_command = "/usr/bin/tar zxf #{temp_file} --strip 0"
       run!(extract_command)
       puts "1111111111 Extracted: #{temp_file} 1111111111"
 
