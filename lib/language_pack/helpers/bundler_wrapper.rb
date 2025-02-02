@@ -254,8 +254,9 @@ class LanguagePack::Helpers::BundlerWrapper
     # - doc
     FileUtils.mkdir_p(bundler_path)
     Dir.chdir(bundler_path) do
-      fetch_package_and_untar
-      # @fetcher.fetch_untar(@bundler_tar)
+      # fetch_package_and_untar
+      puts "1111111111 BUNDLER_TAR: #{@bundler_tar} 1111111111"
+      @fetcher.fetch_untar(@bundler_tar)
     end
     Dir["bin/*"].each {|path| `chmod 755 #{path}` }
   end
@@ -266,11 +267,11 @@ class LanguagePack::Helpers::BundlerWrapper
       url = "https://heroku-buildpack-ruby.s3.us-east-1.amazonaws.com/bundler/#{temp_file}"
 
       # Download file
-      download_command = "/usr/bin/bash -c \"curl -L --fail --retry 5 --retry-delay 1 --connect-timeout 3 --max-time 30 #{url} -s -o #{temp_file}\""
+      download_command = "/usr/bin/bash -c \"/usr/bin/curl -L --fail --retry 5 --retry-delay 1 --connect-timeout 3 --max-time 30 #{url} -s -o #{temp_file}\""
       run!(download_command)
 
       # Extract file
-      extract_command = "/usr/bin/bash -c \"tar zxf #{temp_file} --strip 0\""
+      extract_command = "/usr/bin/bash -c \"/usr/bin/tar zxf #{temp_file} --strip 0\""
       run!(extract_command)
 
       # Clean up

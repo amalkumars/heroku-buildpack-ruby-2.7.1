@@ -116,9 +116,9 @@ module LanguagePack
     # @option options [Hash] :env explicit environment to run command in
     # @option options [Boolean] :user_env whether or not a user's environment variables will be loaded
     def run(command, options = {})
-      wrapped_command = %Q{/usr/bin/bash -c "/usr/bin/#{command_options_to_string(command, options)}"}
-      %x{ #{wrapped_command} }
+      %x{ #{command_options_to_string(command, options)} }
     end
+
 
     # run a shell command and pipe stderr to /dev/null
     # @param [String] command to be run
@@ -132,14 +132,11 @@ module LanguagePack
       options[:env] ||= {}
       options[:out] ||= "2>&1"
       options[:env] = user_env_hash.merge(options[:env]) if options[:user_env]
-
       env = options[:env].map {|key, value| "#{key.shellescape}=#{value.shellescape}" }.join(" ")
-
-      # Use double quotes and no nesting
       if env.empty?
-        command
+        "/usr/bin/bash -c #{command.shellescape} #{options[:out]} "
       else
-        "#{env} #{command}"
+        "/usr/bin/env #{env} bash -c #{command.shellescape} #{options[:out]} "
       end
     end
 
